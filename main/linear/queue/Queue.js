@@ -2,7 +2,7 @@
  * @Descripttion:
  * @Author: ycc
  * @Date: 2022-02-16 09:16:48
- * @LastEditTime: 2022-02-16 09:16:48
+ * @LastEditTime: 2022-02-17 08:18:00
  */
 class Queue {
     constructor() {
@@ -43,3 +43,5 @@ class Queue {
         return result;
     }
 }
+
+module.exports = Queue;
