@@ -1,0 +1,116 @@
+<!--
+ * @Descripttion: 
+ * @Author: ycc
+ * @Date: 2022-02-25 08:43:27
+ * @LastEditTime: 2022-02-25 09:10:07
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+
+
+        class BinarySearchTree {
+            root = null;
+            Node = class {
+                left = null;
+                right = null;
+                constructor(key, value) {
+                    this.key = key;
+                    this.value = value;
+                }
+            };
+            // 类内部方法，递归查找插入节点
+            #insertNode = function (node, newNode) {
+                // 插入失败，已经有key时不允许再插入
+                if (newNode.key === node.key) {
+                    return false;
+                }
+                if (newNode.key < node.key) {
+                    if (node.left) {
+                        return this.#insertNode(node.left, newNode);
+                    } else {
+                        node.left = newNode;
+                        return true;
+                    }
+                }
+
+                if (newNode.key > node.key) {
+                    if (node.right) {
+                        return this.#insertNode(node.right, newNode);
+                    } else {
+                        node.right = newNode;
+                        return true;
+                    }
+                }
+            };
+            // 递归查找
+            #searchNode = function (node, newKey) {
+                // 插入失败，已经有key时不允许再插入
+                if (newKey === node.key) {
+                    return node;
+                }
+                if (newKey < node.key) {
+                    if (node.left) {
+                        return this.#searchNode(node.left, newKey);
+                    } else {
+                        return null;
+                    }
+                }
+
+                if (newKey > node.key) {
+                    if (node.right) {
+                        return this.#searchNode(node.right, newKey);
+                    } else {
+                        return null;
+                    }
+                }
+            };
+            // 插入数据
+            insert(key, value) {
+                const newNode = new this.Node(key, value);
+                if (!this.root) {
+                    this.root = newNode;
+                    return true;
+                }
+                return this.#insertNode(this.root, newNode);
+            }
+            // 搜索数据
+            search(key) {
+                if (!this.root) {
+                    return null;
+                }
+                const node = this.#searchNode(this.root, key);
+                if (node) {
+                    return node.value;
+                }
+                return null;
+            }
+        }
+
+        function test() {
+            const binTree = new BinarySearchTree();
+            binTree.insert(5, { id: 5 });
+            binTree.insert(9, { id: 9 });
+            console.log(binTree.insert(1, { id: 1 }));
+            console.log(binTree.insert(3, { id: 3 }));
+            console.log(binTree.insert(9, { id: 9 }));
+
+            console.log(binTree.search(3));
+
+            console.log(binTree, 'binTree');
+        }
+        test();
+
+    </script>
+</body>
+
+</html>
