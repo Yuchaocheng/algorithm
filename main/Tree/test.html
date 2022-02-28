@@ -6,111 +6,213 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <script>
+      /*
+       * @Descripttion: 二叉搜索树的封装
+       * @Author: ycc
+       * @Date: 2022-02-25 08:07:20
+       * @LastEditTime: 2022-02-25 09:20:36
+       */
+
+       class BinarySearchTree {
+  root = null;
+  Node = class {
+    left = null;
+    right = null;
+    constructor(key, value) {
+      this.key = key;
+      this.value = value;
+    }
+  };
+  // 类内部方法，递归插入节点
+  #insertNode = function (node, newNode) {
+    // 插入失败，不允许插入相同的key节点
+    if (newNode.key === node.key) {
+      return false;
+    }
+    if (newNode.key < node.key) {
+      if (node.left) {
+        return this.#insertNode(node.left, newNode);
+      } else {
+        node.left = newNode;
+        return true;
+      }
+    }
+
+    if (newNode.key > node.key) {
+      if (node.right) {
+        return this.#insertNode(node.right, newNode);
+      } else {
+        node.right = newNode;
+        return true;
+      }
+    }
+  };
+  // 递归查找节点
+  #searchNode = function (node, newKey) {
+      console.log(node,'node');
+    //   debugger
+    if (!node) {
+      return null
+    }
+
+    // 找到了节点
+    if (newKey === node.key) {
+      return node;
+    }
+
+    if (newKey < node.key) {
+      return this.#searchNode(node.left, newKey);
+    }
+
+    if (newKey > node.key) {
+      return this.#searchNode(node.right, newKey);
+    }
+  };
+  // 插入数据
+  insert(key, value) {
+    const newNode = new this.Node(key, value);
+    if (!this.root) {
+      this.root = newNode;
+      return true;
+    }
+    return this.#insertNode(this.root, newNode);
+  }
+  // 搜索数据
+  search(key) {
+    if (!this.root) {
+      return null;
+    }
+    const node = this.#searchNode(this.root, key);
+    if (node) {
+      return node.value;
+    }
+    return null;
+  }
+  // 遍历-先序遍历，传入遍历处理函数，类似forEach的形式
+  preorderTraversal(handler) {
+    if (typeof handler !== 'function') {
+      return;
+    }
+    this.#traversalNode(this.root, handler);
+  }
+  // 遍历-中序遍历
+  inorderTraversal(handler) {
+    if (typeof handler !== 'function') {
+      return;
+    }
+    this.#traversalNode(this.root, handler, 'inorder');
+  }
+  // 遍历-后序遍历
+  postorderTraversal(handler) {
+    if (typeof handler !== 'function') {
+      return;
+    }
+    this.#traversalNode(this.root, handler, 'postorder');
+  }
+  // 节点遍历主函数
+  #traversalNode = function (node, handler, mode = 'preorder') {
+    // 节点为null时结束递归
+    if (!node) {
+      return;
+    }
+    if (mode === 'preorder') {
+      handler(node.key, node.value);
+    }
+    // 先序遍历优先执行左子树，只要左子树有节点，就一直压如左子节点
+    if (node.left) {
+      this.#traversalNode(node.left, handler, mode);
+    }
+    if (mode === 'inorder') {
+      handler(node.key, node.value);
+    }
+
+    // 当左子树执行完后，执行右子节点
+    if (node.right) {
+      this.#traversalNode(node.right, handler, mode);
+    }
+
+    if (mode === 'postorder') {
+      handler(node.key, node.value);
+    }
+  };
 
 
-        class BinarySearchTree {
-            root = null;
-            Node = class {
-                left = null;
-                right = null;
-                constructor(key, value) {
-                    this.key = key;
-                    this.value = value;
-                }
-            };
-            // 类内部方法，递归查找插入节点
-            #insertNode = function (node, newNode) {
-                // 插入失败，已经有key时不允许再插入
-                if (newNode.key === node.key) {
-                    return false;
-                }
-                if (newNode.key < node.key) {
-                    if (node.left) {
-                        return this.#insertNode(node.left, newNode);
-                    } else {
-                        node.left = newNode;
-                        return true;
-                    }
-                }
 
-                if (newNode.key > node.key) {
-                    if (node.right) {
-                        return this.#insertNode(node.right, newNode);
-                    } else {
-                        node.right = newNode;
-                        return true;
-                    }
-                }
-            };
-            // 递归查找
-            #searchNode = function (node, newKey) {
-                // 插入失败，已经有key时不允许再插入
-                if (newKey === node.key) {
-                    return node;
-                }
-                if (newKey < node.key) {
-                    if (node.left) {
-                        return this.#searchNode(node.left, newKey);
-                    } else {
-                        return null;
-                    }
-                }
+  // 查找最小项
+  min() {
+    // 如果为空树，返回null
+    if (!this.root) {
+      return null
+    }
+    let current = this.root;
+    while (current.left) {
+      current = current.left;
+    }
+    // 找到了左下节点
+    return current.key
+  }
+  // 查找最大项
+  max() {
+    // 如果为空树，返回null
+    if (!this.root) {
+      return null
+    }
+    let current = this.root;
+    while (current.right) {
+      current = current.right;
+    }
+    return current.key;
+  }
+}
 
-                if (newKey > node.key) {
-                    if (node.right) {
-                        return this.#searchNode(node.right, newKey);
-                    } else {
-                        return null;
-                    }
-                }
-            };
-            // 插入数据
-            insert(key, value) {
-                const newNode = new this.Node(key, value);
-                if (!this.root) {
-                    this.root = newNode;
-                    return true;
-                }
-                return this.#insertNode(this.root, newNode);
-            }
-            // 搜索数据
-            search(key) {
-                if (!this.root) {
-                    return null;
-                }
-                const node = this.#searchNode(this.root, key);
-                if (node) {
-                    return node.value;
-                }
-                return null;
-            }
-        }
+function test() {
+  const bst = new BinarySearchTree();
 
-        function test() {
-            const binTree = new BinarySearchTree();
-            binTree.insert(5, { id: 5 });
-            binTree.insert(9, { id: 9 });
-            console.log(binTree.insert(1, { id: 1 }));
-            console.log(binTree.insert(3, { id: 3 }));
-            console.log(binTree.insert(9, { id: 9 }));
+  bst.insert(11, { id: 11 });
+  bst.insert(7, { id: 7 });
+  bst.insert(15, { id: 15 });
+  bst.insert(5, { id: 5 });
+  bst.insert(3, { id: 3 });
+  bst.insert(9, { id: 9 });
+  bst.insert(8, { id: 8 });
+  bst.insert(10, { id: 10 });
+  bst.insert(13, { id: 13 });
+  bst.insert(12, { id: 12 });
+  bst.insert(14, { id: 14 });
+  bst.insert(20, { id: 20 });
+  bst.insert(18, { id: 18 });
+  bst.insert(25, { id: 25 });
+  bst.insert(6, { id: 6 });
 
-            console.log(binTree.search(3));
+  // 测试先序遍历
+  bst.preorderTraversal((key, value) => {
+    // console.log(`key: ${key}; value: ${JSON.stringify(value)} \r\n`);
+  });
+  // 测试中序遍历
+  bst.inorderTraversal((key, value) => {
+    // console.log(`key: ${key}; value: ${JSON.stringify(value)} \r\n`);
+  });
+  // 测试后序遍历
+  bst.postorderTraversal((key, value) => {
+    // console.log(`key: ${key}; value: ${JSON.stringify(value)} \r\n`);
+  });
 
-            console.log(binTree, 'binTree');
-        }
-        test();
+  console.log(bst.search(25));
+//   console.log(bst.search(24));
+//   console.log(bst.search(2));
 
+  console.log(bst, 'bst');
+}
+test();
     </script>
-</body>
-
+  </body>
 </html>
