@@ -2,9 +2,11 @@
  * @Descripttion: 图结构封装，核心思想是节点和变分开存储
  * @Author: ycc
  * @Date: 2022-03-02 09:12:51
- * @LastEditTime: 2022-03-02 10:05:55
+ * @LastEditTime: 2022-03-03 09:29:49
  */
 
+const Queue = require('../linear/queue/Queue');
+const Stack = require('../linear/stack/Stack');
 class Graph {
   // 使用一个数组存储顶点
   vertexes = [];
@@ -43,8 +45,6 @@ class Graph {
   // 图输出，格式为 A-->B C D
   toString() {
     let result = '';
-    // console.log(this.vertexes);
-    // console.log(this.edges);
     this.vertexes.forEach((v) => {
       result += `${v} --> `;
       const edge = this.edges[v];
@@ -53,11 +53,103 @@ class Graph {
     });
     return result;
   }
+  // 广度优先搜索算法
+  BFS(first, handler) {
+    // 如果指定的第一个顶点在图中不存在，直接返回
+    if (!this.edges.hasOwnProperty(first)) {
+      return;
+    }
+    // 广度优先搜索基于队列实现，比较巧妙，按顺序处理时考虑队列实现
+    const Q = new Queue();
+    const colors = this.initializeColor();
+    // 初始化指定A为第一个顶点，并将其颜色赋为灰色
+    handler(first, this.edges[first]);
+    Q.enqueue(first);
+    colors[first] = 'gray';
+    while (!Q.isEmpty()) {
+      const vertex = Q.dequeue();
+      const vertexRelation = this.edges[vertex];
+      vertexRelation.forEach((v) => {
+        // 若顶点已被访问过，就不入队了
+        if (colors[v] === 'white') {
+          handler(v, this.edges[v]);
+          Q.enqueue(v);
+          colors[v] = 'gray';
+        }
+      });
+      // 从该例子中看出，只需要两个状态，访问过和未访问过，黑色实际上是未使用的
+      colors[vertex] = 'black';
+    }
+  }
+
+  // 深度优先算法
+  DFS(first, handler) {
+    if (!this.edges.hasOwnProperty(first)) {
+      return;
+    }
+    const colors = this.initializeColor();
+    const stack = new Stack();
+    stack.push(first);
+    handler(first);
+    colors[first] = 'gray';
+    while (!stack.isEmpty()) {
+      // 取出栈顶元素，但不出栈
+      const vertex = stack.peek();
+      const vertexRelation = this.edges[vertex];
+
+      for (let i = 0; i < vertexRelation.length, i++; ) {
+        if (colors[vertexRelation[i]] === 'white') {
+          colors[next] = 'gray';
+          stack.push(next);
+          handler(next);
+          continue;
+        }
+      }
+
+      stack.pop();
+      colors[vertex] = 'black'
+    }
+  }
+
+  // 不使用栈，递归实现，递归的本质是函数栈，所以可以使用递归完成的函数，都可以转化为while+栈
+  DFS2(vertex, handler) {
+    //1.初始化顶点颜色
+    const colors = this.initializeColor();
+    //2.从某个顶点开始依次递归访问
+    this.dfsVisit(vertex, colors, handler);
+  }
+  dfsVisit(vertex, colors, handler) {
+    //1.将颜色设置为灰色
+    colors[vertex] = 'gray';
+
+    //2.处理v顶点
+    handler(vertex);
+
+    //3.访问V的相邻顶点
+    let vNeighbours = this.edges[vertex];
+    for (let i = 0; i < vNeighbours.length; i++) {
+      let a = vNeighbours[i];
+      //判断相邻顶点是否为白色，若为白色，递归调用函数继续访问
+      if (colors[a] == 'white') {
+        this.dfsVisit(a, colors, handler);
+      }
+    }
+
+    //4.将v设置为黑色
+    colors[vertex] = 'black';
+  }
+  // 初始化顶点颜色
+  initializeColor() {
+    // 记录每个顶点的颜色
+    const colors = {};
+    this.vertexes.forEach((v) => (colors[v] = 'white'));
+    return colors;
+  }
 }
 
 function test() {
   // 这里可以测试无向图和有向图，默认是无向图
-//   const graph = new Graph();
+  //   const graph = new Graph();
   const graph = new Graph({ noDirection: false });
   const myVertexes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
   // 添加节点
@@ -75,6 +167,13 @@ function test() {
   graph.addEdge('B', 'F');
   graph.addEdge('E', 'I');
 
-  console.log(graph.toString());
+  // console.log(graph.toString());
+
+  // graph.BFS('A', (v, e) => {
+  //   console.log(v, 1);
+  // });
+  graph.DFS('A', (v, e) => {
+    console.log(v, 1);
+  });
 }
 test();

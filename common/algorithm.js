@@ -2,7 +2,7 @@
  * @Descripttion: 算法代码汇总
  * @Author: ycc
  * @Date: 2022-02-23 08:51:13
- * @LastEditTime: 2022-02-24 09:37:25
+ * @LastEditTime: 2022-03-03 10:21:04
  */
 
 // 不使用霍纳法则计算
@@ -48,5 +48,5 @@ exports.isPrime = (num) => {
   return true;
 };
 
-// 判断质数的gcd实现
+// 请求最大公约数
 exports.gcd = () => {};
