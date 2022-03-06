@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function searchFirstAndLast(nums, target) {
+        if (!nums.length) {
+          return [-1, -1];
+        }
+        let left = rangeSearch(nums, target, { range: [0, nums.length - 1], dir: 'left' });
+
+        console.log(left, 'left');
+        // let right = rangeSearch(nums, target, { range: [0, nums.length - 1], dir: 'right' });
+
+        // console.log(right, 'right');
+
+        // return [left, right];
+      }
+
+      // 一定范围内的二分查找
+      function rangeSearch(nums, target, { range: [left = 0, right = left], dir = 'left' }) {
+        if (!nums.length) {
+          return -1;
+        }
+        let initLeft = left;
+        let initRight = right;
+        let center = -1;
+
+        function searchContinue(current) {
+          // 继续二分向左查找
+          if (nums[current] === nums[current - 1] && dir === 'left') {
+            return rangeSearch(nums, target, { range: [initLeft, current - 1], dir });
+          }
+          if (nums[current] === nums[current + 1] && dir === 'right') {
+            return rangeSearch(nums, target, { range: [current + 1, initRight], dir });
+          }
+          // 当左右两边不等于当前找到的current时结束递归，说明不再需要继续查找了
+          return current;
+        }
+        // 左右指针中间还有元素
+        while (right - left > 1) {
+          center = Math.floor((left + right) / 2);
+          if (target < nums[center]) {
+            right = center;
+          } else if (target > nums[center]) {
+            left = center;
+          } else {
+            // 找到了可能继续查找
+            return searchContinue(center);
+          }
+        }
+        if (nums[left] === target && target === nums[right]) {
+          let result = dir === 'left' ? left : right;
+          return searchContinue(result);
+        }
+
+        // 查找到最后，剩余左右两个元素未对比过
+        if (nums[left] === target) {
+          return searchContinue(left);
+        }
+        if (nums[right] === target) {
+          return searchContinue(right);
+        }
+
+        // 当找不到时，说明已经是最左或者最右
+
+        return  -1;
+      }
+
+      console.log(searchFirstAndLast([5, 7, 7, 8, 8, 10], 8));
+    </script>
+  </body>
+</html>

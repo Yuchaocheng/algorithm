@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-/*
- * @Descripttion: 单向链表
- * @Author: ycc
- * @Date: 2022-02-17 09:02:12
- * @LastEditTime: 2022-02-17 09:02:12
- */
-=======
 
 
 class LinkedList {
@@ -193,4 +185,3 @@ linkedList.append('45');
 linkedList.append('abc');
 
 console.log(linkedList.toString());
->>>>>>> 597ec97870fc3a0f518c6b8a220485bdac40ae40

@@ -1,0 +1,37 @@
+<!--
+ * @Date: 2022-03-05 21:13:06
+ * @LastEditTime: 2022-03-05 21:16:05
+ * @Author: ycc
+ * @Description: file content
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      function ListNode(val, next) {
+        this.val = val === undefined ? 0 : val;
+        this.next = next === undefined ? null : next;
+      }
+      var removeElements = function (head, val) {
+        let newList = new ListNode(0, head);
+        let cur = newList;
+        while (cur.next) {
+          if (cur.next.val == val) {
+            cur.next = cur.next.next;
+          } else {
+            cur = cur.next;
+          }
+        }
+        console.log(newList.next, 22222);
+        return newList.next;
+      };
+      console.log(removeElements([7,7,7,7], 7));
+    </script>
+  </body>
+</html>
