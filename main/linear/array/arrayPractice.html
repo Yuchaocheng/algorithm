@@ -1,112 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-</head>
-
-<body>
-  <script>
-    function searchFirstAndLast(nums, target) {
-      if (!nums.length) {
-        return [-1, -1];
-      }
-      let left = rangeSearch(nums, target, { range: [0, nums.length - 1], dir: 'left' });
-
-      console.log(left, 'left');
-      // let right = rangeSearch(nums, target, { range: [0, nums.length - 1], dir: 'right' });
-
-      // console.log(right, 'right');
-
-      // return [left, right];
-    }
-
-    // 一定范围内的二分查找
-    function rangeSearch(nums, target, { range: [left = 0, right = left], dir = 'left' }) {
-      if (!nums.length) {
-        return -1;
-      }
-      let initLeft = left;
-      let initRight = right;
-      let center = -1;
-
-      function searchContinue(current) {
-        // 继续二分向左查找
-        if (nums[current] === nums[current - 1] && dir === 'left') {
-          return rangeSearch(nums, target, { range: [initLeft, current - 1], dir });
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      var generateMatrix = function (n, startN, startX, startY) {
+        let result = Array.from({ length: n }, () => []);
+        function main(n, startN, startX, startY, result) {
+          if (n === 1) {
+            result[startY][startX] = startN;
+            return;
+          }
+          let i = startN;
+          // 每一段有n-1个数，但是第一个数已经是startN了，所以再减去1
+          let leftToRight = n - 1 + startN - 1;
+          let topToBottom = 2 * (n - 1) + startN - 1;
+          let rightToLeft = 3 * (n - 1) + startN - 1;
+          let bottomToTop = 4 * (n - 1) + startN - 1;
+          while (i <= bottomToTop) {
+            if (i <= leftToRight) {
+              let curI = i - startN;
+              result[startY][curI + startX] = i;
+            } else if (i <= topToBottom) {
+              let curI = i - leftToRight - 1;
+              result[curI + startY][n - 1 + startX] = i;
+            } else if (i <= rightToLeft) {
+              let curI = i - topToBottom - 1;
+              result[n - 1 + startY][n - 1 - curI + startX] = i;
+            } else {
+              let curI = i - rightToLeft - 1;
+              result[n - 1 - curI + startY][startY] = i;
+            }
+            i++;
+          }
+          n -= 2;
+          if (n > 0) {
+            main(n, i, startX + 1, startY + 1, result);
+          }
         }
-        if (nums[current] === nums[current + 1] && dir === 'right') {
-          return rangeSearch(nums, target, { range: [current + 1, initRight], dir });
+
+        main(n, 1, 0, 0, result);
+        return result;
+      };
+
+      var generateMatrix2 = function (n, startN, startCol, startRow) {
+        let result = Array.from({ length: n }, () => []);
+        function main(n, startN, startCol, startRow, result) {
+          if (n === 1) {
+            result[startRow][startCol] = startN;
+            return;
+          }
+          let count = startN; //从1到n的平方当前值
+          let nums = 0; // while循环次数
+          // 每一段有n-1个数
+          let leftToRight = n - 1;
+          let topToBottom = 2 * (n - 1);
+          let rightToLeft = 3 * (n - 1);
+          let bottomToTop = 4 * (n - 1);
+          let col = startCol;
+          let row = startRow;
+          while (nums < bottomToTop) {
+            if (nums < leftToRight) {
+              result[row][col] = count;
+              col++;
+            } else if (nums < topToBottom) {
+              result[row][col] = count;
+              row++;
+            } else if (nums < rightToLeft) {
+              result[row][col] = count;
+              col--;
+            } else {
+              result[row][col] = count;
+              row--;
+            }
+            count++;
+            nums++;
+          }
+          n -= 2;
+          if (n > 0) {
+            main(n, count, startCol + 1, startRow + 1, result);
+          }
         }
-        // 当左右两边不等于当前找到的current时结束递归，说明不再需要继续查找了
-        return current;
-      }
-      // 左右指针中间还有元素
-      while (right - left > 1) {
-        center = Math.floor((left + right) / 2);
-        if (target < nums[center]) {
-          right = center;
-        } else if (target > nums[center]) {
-          left = center;
-        } else {
-          // 找到了可能继续查找
-          return searchContinue(center);
-        }
-      }
-      if (nums[left] === target && target === nums[right]) {
-        let result = dir === 'left' ? left : right;
-        return searchContinue(result);
-      }
 
-      // 查找到最后，剩余左右两个元素未对比过
-      if (nums[left] === target) {
-        return searchContinue(left);
-      }
-      if (nums[right] === target) {
-        return searchContinue(right);
-      }
+        main(n, 1, 0, 0, result);
+        return result;
+      };
 
-      // 当找不到时，说明已经是最左或者最右
-
-      return -1;
-    }
-
-    // console.log(searchFirstAndLast([5, 7, 7, 8, 8, 10], 8));
-
-
-    var searchInsert = function (arr, target) {
-      if (!arr.length) {
-        return 0;
-      }
-      if (target < arr[0]) {
-        return 0;
-      }
-      if (target > arr[arr.length - 1]) {
-        return arr.length;
-      }
-      let left = 0;
-      let right = arr.length - 1;
-      // target默认插入到数组末尾，一旦在查找时发现target小于或等于某一项，将插入位置赋值为该项
-      let pos = arr.length;
-
-      while (left <= right) {
-        debugger
-        let mid = left + Math.floor((right - left) / 2);
-        if (target > arr[mid]) {
-          left = mid + 1;
-        } else {
-          pos = mid;
-          right = mid - 1;
-        }
-      }
-      return pos;
-    };
-    debugger
-    console.log(searchInsert([1, 3], 3));
-  </script>
-</body>
-
+      console.log(generateMatrix2(5));
+    </script>
+  </body>
 </html>

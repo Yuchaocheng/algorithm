@@ -1,6 +1,6 @@
 /*
  * @Date: 2022-03-05 22:01:52
- * @LastEditTime: 2022-03-06 12:21:47
+ * @LastEditTime: 2022-03-13 11:37:15
  * @Author: ycc
  * @Description: 数组刷题
  */
@@ -123,6 +123,20 @@ var removeElement = function (nums, val) {
   }
   return nums.length;
 };
+// 这里说一下，在js中之所以删除一个元素时比较简单的，是因为上层提供了splice方法
+// 在大多数语言中，在数组中删除一个元素，还要考虑之后的元素向前移动一位，一般的做法是覆盖
+
+// 双指针，快慢指针法
+var removeElement2 = function (nums, val) {
+    let slowI = 0
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] !== val) {
+            nums[slowI] = nums[i]
+            slowI += 1
+        }
+    }
+    return slowI
+}
 
 /**
  * @description: 给定一个 n 个元素有序的（升序）整型数组 nums 和一个目标值 target  ，写一个函数搜索 nums 中的 target，如果目标值存在返回下标，否则返回 -1
@@ -445,3 +459,301 @@ var isPerfectSquare2 = function (num) {
   }
   return false;
 };
+
+/**
+ * @description: LeetCode26 删除有序数组中的重复项
+ * @param {*}
+ * @return {*}
+ */
+
+// 1. Set结构快速解题
+var removeDuplicates = function (nums) {
+    // LeetCode不通过应该是因为改变了nums的地址
+    nums = [...new Set(nums)]
+    return nums.length
+
+    // 不改变地址的兼容
+    let numsSet = [...new Set(nums)];
+    numsSet.forEach(i => (nums.push(i)))
+    return numsSet.length
+};
+// 2. 不使用Set，使用splice暴力解题，效率是比较低的，splice相比于覆盖后缩短长度
+var removeDuplicates2 = function (nums) {
+    let index = 0
+    while (index < nums.length - 1) {
+        // 有序数组中后一位和前一位相等，删除，此时指针不能移动。元素被删除后，下一个元素自动补上
+        if (nums[index] === nums[index + 1]) {
+            nums.splice(index + 1, 1)
+        } else {
+            index++
+        }
+    }
+    return nums.length
+};
+
+// 3. 不使用Set和Splice，快慢指针解题
+var removeDuplicates3 = function (nums) {
+
+    let slowI = 0
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] !== nums[i + 1]) {
+            nums[slowI] = nums[i]
+            slowI++
+        }
+    }
+    return slowI
+}
+
+/**
+ * @description: LeetCode844 比较含退格的字符串，# 代表退格字符
+ * @param {string} s
+ * @param {string} t
+ * @return {boolean}
+ * 先行断言只会匹配到断言前的内容，这就是它和普通匹配的区别
+ */
+// 单指针，指针回退，太复杂，推荐使用方法2的栈思维解题
+var backspaceCompare = function (s, t) {
+    function backspaceMain(s) {
+        let index = 0;
+        while (index < s.length) {
+            if (s[index] === '#') {
+                s = s.slice(0, Math.max(0, index - 1)) + s.slice(index + 1);
+
+                if (index < 2) {
+                    index = 0
+                } else {
+                    index -= 2;
+                }
+            } else {
+                index++;
+            }
+        }
+        return s;
+    }
+    return backspaceMain(s) === backspaceMain(t)
+};
+
+// 栈思想解题
+var backspaceCompare2 = function (s, t) {
+    function backspaceMain(s) {
+        let arr = [];
+        for (let i = 0; i < s.length; i++) {
+            // 非#字符入栈
+            if (s[i] !== '#') {
+                arr.push(i)
+            } else {
+                // #字符出栈
+                arr.pop()
+            }
+        }
+        return arr.join('')
+    }
+    return backspaceMain(s) === backspaceMain(t)
+};
+// console.log(backspaceCompare2('ab##', 'c#d#'));
+
+/**
+ * @description: 给你一个按 递增的整数数组 nums，返回 每个数字的平方 组成的新数组，要求也按 非递减顺序 排序。
+ *               考点在于整数数组可能有负数，负数平方后的顺序和原先相反
+ * @param {*}
+ * @return {*}
+ */
+
+// 暴力求解，利用内置的sort方法，代码很简洁
+var sortedSquares = function (nums) {
+    let newList = nums.map(item => item * item)
+    // sort的第一个参数a是next，b是current，有点反人类啊
+    return newList.sort((a, b) => a - b)
+}
+// 双指针，要观察出该列表特征，局部有序，数组两边的绝对值大，中间绝对值小
+var sortedSquares = function (nums) {
+    let left = 0;
+    let right = nums.length - 1
+    let result = []
+    while (left <= right) {
+        const leftSquares = nums[left] * nums[left]
+        const rightSquares = nums[right] * nums[right]
+        if (leftSquares > rightSquares) {
+            result.unshift(leftSquares)
+            left++
+        } else {
+            result.unshift(rightSquares)
+            right--
+        }
+    }
+    return result
+}
+
+/**
+ * @description: 给定一个含有 n 个正整数的数组和一个正整数 target
+ * 找出该数组中满足其和 ≥ target 的长度最小的 连续子数组 [numsl, numsl+1, ..., numsr-1, numsr] ，并返回其长度。如果不存在符合条件的子数组，返回 0
+ * @param {*} target
+ * @param {*} nums
+ * @return {*}
+ * 关键词是连续，并不是从数组中任意取出两个数，而是一个子数组。算法思路：滑动数组
+ * 滑动数组就是使用一段范围，起点和终端不确定的情况
+ */
+
+// 暴力求解
+var minSubArrayLen = function (target, nums) {
+    let minLength = 0
+    for (let i = 0; i < nums.length; i++) {
+        let total = 0
+        for (let j = i; j < nums.length; j++) {
+            total += nums[j];
+            if (total >= target) {
+                // 统计长度要比索引相减大1
+                let min = j - i + 1
+                if (minLength === 0) {
+                    minLength = min
+                } else {
+                    minLength = Math.min(minLength, min)
+                }
+                break;
+            }
+        }
+    }
+    return minLength
+};
+
+// 滑动窗口，有点像快慢指针
+var minSubArrayLen2 = function (target, nums) {
+    let quickI = 0
+    let slowI = 0
+    let minLen = nums.length + 1 //给一个初始值
+    while (quickI < nums.length) {
+
+        let total = 0
+        for (let i = slowI; i <= quickI; i++) {
+            total += nums[i]
+        }
+        if (total >= target) {
+            let subLen = quickI - slowI + 1
+            // 第一次直接赋值
+            if (minLen === 0) {
+                minLen = subLen
+            } else {
+                minLen = Math.min(minLen, subLen)
+            }
+            // 当前窗口已经满足条件，缩小窗口寻找更小的窗口
+            if (slowI < quickI) {
+                slowI++
+            } else { //窗口为0
+                quickI++
+            }
+
+        } else {
+            quickI++
+        }
+    }
+    return minLen > nums.length ? 0 : minLen
+};
+
+var minSubArrayLen3 = function (target, nums) {
+    let quickI = 0
+    let slowI = 0
+    let total = 0
+    let minLen = nums.length + 1 //给一个初始值
+    while (quickI < nums.length) {
+        total += nums[quickI]
+        while (total >= target && slowI <= quickI) {
+            let subLen = quickI - slowI + 1
+            minLen = Math.min(minLen, subLen)
+
+            total -= nums[slowI]
+            slowI++
+        }
+        quickI++
+    }
+    return minLen > nums.length ? 0 : minLen
+};
+// console.log(minSubArrayLen3(7, [2, 3, 1, 2, 4, 3]));
+
+
+/**
+ * @description: leetCode94 水果成篮
+ * @param {*} fruits
+ * @return {*}
+ * 暴力求解这里就不再重复写了
+ */
+var totalFruit = function (fruits) {
+    let nums = 0;
+    let typeArr = [];
+    let slowI = 0;
+    for (let i = 0; i < fruits.length; i++) {
+        // 不属于某一个果篮的类型
+        if (!typeArr.includes(fruits[i])) {
+            if (typeArr.length >= 2) {
+                // pop出靠前的水果树是不对的，应该去掉非最后一次出现的水果
+                // typeArr.shift();
+                // 慢指针应该等于当前位置向前连续的后一种类型
+                slowI = i - 1;
+                let type1 = fruits[slowI];
+                if (type1 === typeArr[0]) {
+                    typeArr.pop();
+                } else {
+                    typeArr.shift();
+                }
+                while (fruits[slowI - 1] === type1) {
+                    slowI--;
+                }
+            }
+            // 存入当前水果类型`
+            typeArr.push(fruits[i]);
+        }
+        nums = Math.max(i - slowI + 1, nums);
+    }
+    return nums;
+};
+// console.log(totalFruit([3, 3, 3, 1, 2, 1, 1, 2, 3, 3, 4]));
+
+/**
+ * @description: LeetCode59：螺旋矩阵 II
+ * 给你一个正整数 n ，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix
+ * @param {*} n
+ * @return {*}
+ * 解题思路：分成四段解题，每一段左闭右开，递归解题。定义row和col，每一段row和col的变动不同
+ */
+
+var generateMatrix2 = function (n) {
+    let result = Array.from({ length: n }, () => []);
+    function main(n, startN, startCol, startRow, result) {
+        if (n === 1) {
+            result[startRow][startCol] = startN;
+            return;
+        }
+        let count = startN; //从1到n的平方当前值
+        let nums = 0; // while循环次数
+        // 每一段有n-1个数
+        let leftToRight = n - 1;
+        let topToBottom = 2 * (n - 1);
+        let rightToLeft = 3 * (n - 1);
+        let bottomToTop = 4 * (n - 1);
+        let col = startCol;
+        let row = startRow;
+        while (nums < bottomToTop) {
+            result[row][col] = count;
+            if (nums < leftToRight) {
+                col++;
+            } else if (nums < topToBottom) {
+                row++;
+            } else if (nums < rightToLeft) {
+                col--;
+            } else {
+                row--;
+            }
+            count++;
+            nums++;
+        }
+        n -= 2;
+        if (n > 0) {
+            main(n, count, startCol + 1, startRow + 1, result);
+        }
+    }
+
+    main(n, 1, 0, 0, result);
+    return result;
+};
+
+console.log(generateMatrix2(5));
+
