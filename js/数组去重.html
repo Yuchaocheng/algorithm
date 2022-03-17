@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数组去重</title>
+</head>
+
+<body>
+    <script>
+        let arr = [11, 222, 33, 4, 4, 5, , 5, 5, 7, 8]
+        function dumplicateRemove(arr) {
+            if (arr.length < 2) {
+                return arr
+            }
+            let valueMap = {
+
+            }
+            let result = []
+            arr.forEach(item => {
+                if (!valueMap.hasOwnProperty(item)) {
+                    valueMap[item] = item
+                    result.push(item)
+                }
+            });
+            return result
+        }
+        console.log(dumplicateRemove(arr));
+    </script>
+</body>
+
+</html>

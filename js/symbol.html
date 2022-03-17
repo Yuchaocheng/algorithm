@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symbol的用法和用处</title>
+</head>
+
+<body>
+    <span>1</span>
+    <span>2</span>
+    <script>
+        function symbolBase() {
+            // 利用Symbol函数创建symbol变量
+            const symbol1 = Symbol('name')
+            const symbol11 = Symbol('name')
+            const symbol2 = Symbol('age')
+            const symbol22 = Symbol.for('age')
+            const symbol3 = Symbol.for('test')
+            const symbol33 = Symbol.for('test')
+
+            const obj = {
+                [symbol1]: "张三",
+                [symbol2]: 18,
+            }
+            console.log(obj[symbol1], ' obj[symbol1]');// 读取属性
+            console.log(obj, 'obj');
+            console.log(symbol1 === symbol11);
+            console.log(symbol2 === symbol22);
+            console.log(symbol3 === symbol33);
+        }
+        // iterator接口测试
+        function iteratorTest() {
+            console.log(Symbol.iterator, 11);
+            let arr = []
+            let set = new Set()
+            let map = new Map()
+            let obj = new Object()
+            console.log(arr[Symbol.iterator]); // 数组肯定有 iterator Symbol
+            console.log(set[Symbol.iterator]); // Set类型也有 iterator Symbol
+            console.log(map[Symbol.iterator]); // map类型也有iterator Symbol
+            console.log(obj[Symbol.iterator]); //obj类型就没有iterator Symbol
+        }
+        // iterator接口模拟
+        function myIterator() {
+            class MakeIterator {
+                constructor(list) {
+                    this.list = list;
+                    this.index = 0;
+                }
+
+                next() {
+                    if (this.index < this.list.length) {
+                        return {
+                            value: this.list[this.index++],
+                            done: false
+                        }
+                    } else {
+                        return {
+                            value: undefined,
+                            done: true
+                        }
+                    }
+                }
+            }
+            let set = new Set([1, 2, 3])
+            let iterator = new MakeIterator(set);
+            // console.log(iterator.next());
+            // console.log(iterator.next());
+            // obj默认是不可被for of遍历的，但是我们可以在它上面自定义Symbol.iterator函数
+            let obj = {
+                [Symbol.iterator]() {
+
+                    /*  测试1
+                        报错：Result of the Symbol.iterator method is not an object 
+                        必须返回遍历器对象
+                    */
+                    // return 1
+
+
+                    /*  测试2
+                        报错：Uncaught TypeError: undefined is not a function
+                        个人理解：报这个错是因为，执行for of循环的时候，会去遍历器生成函数Symbol.iterator的返回的对象中寻找next方法来执行，
+                        但是我们没有定义next方法，那么该对象的next属性就是undefined，undefined当然不能当做函数来执行
+                    */
+                    // return { name: 'webchang' }
+
+                    /*  测试3
+                        报错：Uncaught TypeError: Iterator result 1 is not an object
+                        遍历器的返回值 1 不是一个对象，它希望我们在 next 方法中返回一个对象
+                    */
+                    // return {
+                    //     next: function () {
+                    //         return 1
+                    //     }
+                    // }
+
+                    /*  测试4
+                        forof正常运行，但是无结束条件
+                    */
+                    // return {
+                    //     next: function () {
+                    //         // 如果直接返回这样的对象，在执行for of循环的时候，会一直打印undefined，因为该对象没有value属性
+                    //         // return {name:'webchang'}
+
+                    //         // 如果返回带有value属性的对象，执行for of循环的时候，会一直打印value属性的值，因为我们没有给它结束条件
+                    //         return { value: 111, done: false }
+                    //     }
+                    // }
+
+                    /*  测试5
+                        正常运行
+                    */
+                    let index = 0;
+                    // return {
+                    //     next: function () {
+                    //         if (index < 4) {
+                    //             return { value: index++, done: false }
+                    //         }
+                    //         return { value: undefined, done: true }
+                    //     }
+                    // }
+
+                    // 将forin方法转化为forof
+                    const keys = Object.keys(this)
+                    return {
+                        next() {
+                            if (index < keys.length) {
+                                return { value: keys[index++] }
+                            } else {
+                                return { done: true }
+                            }
+                        }
+                    }
+                }
+
+            }
+            obj.name = '张三'
+            obj.age = 18
+            for (const iterator of obj) {
+                console.log(iterator);
+            }
+        }
+        // myIterator()
+
+
+        function classTest() {
+            // 所以个人理解Symbol本身就是一个常量了，一般不会去改它的值，没有意义
+            const colorSymbol = Symbol('color')
+            class Test {
+                #p = 3
+                constructor() {
+                    this[colorSymbol] = 'while'
+                }
+                changeColor(color) {
+                    this[colorSymbol] = color
+                }
+                getColor() {
+                    return this[colorSymbol]
+                }
+            }
+            let t1 = new Test()
+            let t2 = new Test()
+            console.log(t1['#p']);
+            console.log(t1['#p'] = 3);
+
+            t1.changeColor('red')
+            t2.changeColor('black')
+            console.log(t1);
+            const symbols = Object.getOwnPropertySymbols(t1)
+            console.log(symbols[0]);
+            console.log(symbols['color']);
+            console.log(t2);
+        }
+        classTest()
+    </script>
+</body>
+
+</html>

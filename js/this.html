@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>this相关html</title>
+</head>
+
+<body>
+    <script>
+        function rewirteCall() {
+            Function.prototype.call = function (obj, ...args) {
+                obj = obj || window //如果不传或者null，默认为window
+                const symbol = Symbol()
+                // this即调用的函数
+                obj[symbol] = this
+                const result = obj[symbol](...args)
+                delete obj[symbol]
+                return result
+            }
+            Function.prototype.apply = function (obj, args) {
+                const symbol = Symbol()
+                // this即调用的函数
+                obj[symbol] = this
+                const result = obj[symbol](...args)
+                delete obj[symbol]
+                return result
+            }
+
+
+            Function.prototype.bind = function (obj, ...args) {
+                const symbol = Symbol()
+                obj[symbol] = this
+                return function (_args) {
+                    _args = args.concat(_args)
+                    const result = obj[symbol](..._args)
+                    delete obj[symbol]
+                    return result
+                }
+            }
+            function say(age) {
+                console.log(`my name is ${this.name}, I am ${age} years old`);
+                return 1
+            }
+            let obj = {
+                name: '张三',
+                age: 18
+            }
+            console.log(say.call(obj, obj.age));
+            console.log(say.apply(obj, [obj.age]));
+            console.log(say.bind(obj)(obj.age));
+        }
+        // rewirteCall()
+        
+
+    </script>
+</body>
+
+</html>

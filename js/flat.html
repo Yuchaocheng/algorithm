@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数组扁平化</title>
+</head>
+
+<body>
+    <script>
+
+        // 自定义flat
+        Array.prototype.myFlat = function (num = 1) {
+            if (num < 1) {
+                return this
+            }
+            let result = []
+            this.forEach(item => {
+                if (Array.isArray(item)) {
+                    // 也可以不用ES6
+                    // result.push(...item.myFlat(num - 1))
+                    result = result.concat(item.myFlat(num - 1))
+                } else {
+                    result.push(item)
+                }
+            })
+            return result
+        }
+
+
+        function flatTest() {
+            let arr = [1, 2, [3, 4, [5, 6]]]
+            // 不改变原数组，生成一个新的数组
+            let f1 = arr.flat(0)
+            console.log(f1);
+            console.log(arr);
+
+            let f2 = arr.myFlat(1)
+            console.log(f2);
+        }
+        flatTest()
+    </script>
+</body>
+
+</html>

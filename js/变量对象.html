@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>变量对象</title>
+</head>
+
+<body>
+    <script>
+        console.log(foo); // function foo
+        var foo = 20;
+        function foo() { console.log('function foo') }
+        console.log(foo);
+
+
+        // console.log(x); //  Cannot access 'x' before initialization，因为初始化前无法访问
+        // console.log(y);  //报错 y is not defined ,因为变量对象中没有该属性
+        let x = 1
+
+    </script>
+</body>
+
+</html>

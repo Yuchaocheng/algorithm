@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数柯里化</title>
+</head>
+
+<body>
+    <script>
+        function student(school, sex, name) {
+            console.log(`${name} ，${sex}， 来自 ${school}`);
+        }
+
+        student('北京大学', '男', '张三')
+        student('北京大学', '男', '李四')
+        student('北京大学', '男', '王五')
+
+        // 函数柯里化 
+        function curry(fn, ...params) {
+            if (typeof fn !== 'function') {
+                return fn
+            }
+            return function () {
+                // 执行上下文为最后生成函数的执行上下文
+                return fn.apply(this, [...params, ...arguments])
+            }
+        }
+        const newStundent = curry(student, '北京大学', '男')
+        newStundent('张三')
+        newStundent('李四')
+        newStundent('王五')
+
+        const newStundent2 = curry(student, '北京大学')
+        newStundent2('男', '张三')
+        newStundent2('男', '李四')
+        newStundent2('男', '王五')
+    </script>
+</body>
+
+</html>

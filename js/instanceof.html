@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>instanceof原理</title>
+</head>
+
+<body>
+    <script>
+        function myInstanceof(obj, Class) {
+            if (!Class.prototype) {
+                return false
+            }
+            let right = Class.prototype
+            while (obj !== right) {
+                // 找到原型链顶部还没有找到
+                if (!obj) {
+                    return false
+                }
+                obj = Object.getPrototypeOf(obj)
+            }
+            return true
+        }
+
+        let arr = []
+        console.log(Object.getPrototypeOf(arr) instanceof Object);
+        console.log(arr instanceof Object);
+        console.log(null instanceof Object);
+
+        console.log(myInstanceof(Object.getPrototypeOf(arr), Object));
+        console.log(myInstanceof(arr, Object));
+        console.log(myInstanceof(null, Object));
+    </script>
+</body>
+
+</html>
