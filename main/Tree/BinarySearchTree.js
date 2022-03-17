@@ -67,7 +67,7 @@ class BinarySearchTree {
     }
     return this.#insertNode(this.root, newNode);
   }
-  // 搜索数据
+  // 搜索数据，该中搜索方式类似深度优先搜索
   search(key) {
     if (!this.root) {
       return null;

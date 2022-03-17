@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      var generateMatrix = function (n, startN, startX, startY) {
+        let result = Array.from({ length: n }, () => []);
+        function main(n, startN, startX, startY, result) {
+          if (n === 1) {
+            result[startY][startX] = startN;
+            return;
+          }
+          let i = startN;
+          // 每一段有n-1个数，但是第一个数已经是startN了，所以再减去1
+          let leftToRight = n - 1 + startN - 1;
+          let topToBottom = 2 * (n - 1) + startN - 1;
+          let rightToLeft = 3 * (n - 1) + startN - 1;
+          let bottomToTop = 4 * (n - 1) + startN - 1;
+          while (i <= bottomToTop) {
+            if (i <= leftToRight) {
+              let curI = i - startN;
+              result[startY][curI + startX] = i;
+            } else if (i <= topToBottom) {
+              let curI = i - leftToRight - 1;
+              result[curI + startY][n - 1 + startX] = i;
+            } else if (i <= rightToLeft) {
+              let curI = i - topToBottom - 1;
+              result[n - 1 + startY][n - 1 - curI + startX] = i;
+            } else {
+              let curI = i - rightToLeft - 1;
+              result[n - 1 - curI + startY][startY] = i;
+            }
+            i++;
+          }
+          n -= 2;
+          if (n > 0) {
+            main(n, i, startX + 1, startY + 1, result);
+          }
+        }
+
+        main(n, 1, 0, 0, result);
+        return result;
+      };
+
+      var generateMatrix2 = function (n, startN, startCol, startRow) {
+        let result = Array.from({ length: n }, () => []);
+        function main(n, startN, startCol, startRow, result) {
+          if (n === 1) {
+            result[startRow][startCol] = startN;
+            return;
+          }
+          let count = startN; //从1到n的平方当前值
+          let nums = 0; // while循环次数
+          // 每一段有n-1个数
+          let leftToRight = n - 1;
+          let topToBottom = 2 * (n - 1);
+          let rightToLeft = 3 * (n - 1);
+          let bottomToTop = 4 * (n - 1);
+          let col = startCol;
+          let row = startRow;
+          while (nums < bottomToTop) {
+            if (nums < leftToRight) {
+              result[row][col] = count;
+              col++;
+            } else if (nums < topToBottom) {
+              result[row][col] = count;
+              row++;
+            } else if (nums < rightToLeft) {
+              result[row][col] = count;
+              col--;
+            } else {
+              result[row][col] = count;
+              row--;
+            }
+            count++;
+            nums++;
+          }
+          n -= 2;
+          if (n > 0) {
+            main(n, count, startCol + 1, startRow + 1, result);
+          }
+        }
+
+        main(n, 1, 0, 0, result);
+        return result;
+      };
+
+      console.log(generateMatrix2(5));
+    </script>
+  </body>
+</html>
