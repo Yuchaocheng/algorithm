@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise全理解</title>
+    <script src="./PromiseBase.js"></script>
+    <!-- <script src="./MyPromise.js"></script> -->
+
+    <!-- 复习手写Promise -->
+    <script src="./Promise2.js"></script>
+</head>
+
+<body>
+    <script>
+        // 面试题，Promise的输出顺序，结果是按顺序的0-6
+        function qus() {
+            Promise.resolve().then(() => {
+                console.log(0);//1
+                return Promise.resolve(4);
+            }).then((res) => {
+                console.log(res)//7
+            })
+
+            Promise.resolve().then(() => {
+                console.log(1);//2
+            }).then(() => {
+                console.log(2);//3
+            }).then(() => {
+                console.log(3);//4
+            }).then(() => {
+                console.log(5);//5
+            }).then(() => {
+                console.log(6);//6
+            })
+        }
+        // qus()
+    </script>
+</body>
+
+</html>

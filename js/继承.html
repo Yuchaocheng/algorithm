@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>继承</title>
+</head>
+
+<body>
+    <script>
+        // 1.原型链继承
+        function inherit1() {
+
+            function Parent() {
+                this.name = 'kanavi'
+                this.arr = [1, 2, 3]
+                this.sayHello = function () {
+                    console.log(123);
+                }
+            }
+            Parent.prototype.getName = function () {
+                return this.name
+            }
+            Parent.prototype.x = 'x'
+            Parent.prototype.add = (() => {
+                console.log(this, 'this');
+                debugger
+            })
+            const p = new Parent()
+            p.add()
+            function Child() {
+
+            }
+            Child.prototype = new Parent()
+            Child.prototype.constructor = Parent
+            const c1 = new Child()
+            const c2 = new Child()
+            console.log(c1);
+            console.log(c1.name);
+            console.log(c1.getName());
+            console.log(c1.x);
+
+            console.log(c1.sayHello === c2.sayHello);
+        }
+        inherit1()
+
+        // 原型链集成class模式
+        function inherit11() {
+            class Parent {
+                constructor() {
+                    this.name = 'kanavi'
+                }
+                getName() {
+                    return this.name
+                }
+            }
+            class Child {
+                constructor() {
+                    // super()
+                }
+                say() {
+                    console.log(111);
+                }
+            }
+            Child.prototype = null
+            const c1 = new Child()
+            console.log(c1, 'c1');
+            // Child.prototype = new Parent()
+        }
+        // inherit11()
+
+        // 借用构造函数实现继承 
+        function inherit2() {
+            function Parent(name) {
+                this.name = name
+                // sayHello每次子实例创建时都会创建独立的内存空间保存
+                this.sayHello = function () {
+                    console.log(123);
+                }
+            }
+            const p1 = new Parent('p1')
+            const p2 = new Parent('p2')
+            console.log(p1);
+            console.log(p2);
+            console.log(p1.sayHello === p2.sayHello);
+            Parent.prototype.getName = function () {
+                return this.name
+            }
+            // function Child(name) {
+            //     Parent.call(this, name)
+            // }
+            // const c1 = new Child('ka')
+            // console.log(c1);
+            // console.log(c1.getName);
+        }
+        // inherit2()
+
+        // 组合继承（组合原型集成和借用构造函数集成的优点）
+        function inherit3() {
+            function Parent(name) {
+                console.log(name, 'name');
+                this.name = name;
+                this.colors = ['red', 'blue', 'green']
+                this.setName = function (newName) {
+                    this.name = newName
+                }
+            }
+            Parent.prototype.getName = function () {
+                return this.name
+            }
+            function Child(name, age) {
+                Parent.call(this, name, age);
+                this.age = age
+            }
+            Child.prototype = new Parent()
+
+            Child.prototype.constructor = Child
+            const c1 = new Child('c1', 18)
+            const c2 = new Child('c2', 28)
+            console.log(c1, 'c1');
+            console.log(c1, 'c2');
+        }
+        // inherit3()
+
+        // 原型式继承
+        function inherit4() {
+
+            function createObj(obj) {
+                function F() { }
+                F.prototype = obj
+                return new F()
+            }
+
+        }
+        // 寄生组合式继承，这种方式我个人认为就是组合式继承的优化，不要Child的prototype不要指向父类的实例对象，直接指向父类的原型对象即可
+        function inherit5() {
+            function prototype(Child, Parent) {
+                const prototype = Object.create(Parent.prototype)
+                prototype.constructor = Child
+                Child.prototype = prototype
+            }
+            function Parent(name) {
+                console.log(name, 'name');
+                this.name = name;
+                this.colors = ['red', 'blue', 'green']
+                this.setName = function (newName) {
+                    this.name = newName
+                }
+            }
+            Parent.prototype.getName = function () {
+                return this.name
+            }
+            function Child(name, age) {
+                Parent.call(this, name, age);
+                this.age = age
+            }
+            prototype(Child, Parent)
+            const c1 = new Child('c1', 18)
+            console.log(c1, 'c1');
+        }
+        inherit5()
+    </script>
+</body>
+
+</html>

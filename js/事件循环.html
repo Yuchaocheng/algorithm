@@ -48,7 +48,25 @@
 
             console.log('script end');//3
         }
-        practices2()
+        // practices2()
+
+        // 最终的执行顺序为1、2、3、4、5
+        function jobs() {
+            console.log(1);
+            setTimeout(() => {
+                console.log(5);
+            }, 0);
+            console.log(Promise.resolve(3).then(res => {
+                console.log(res, 'res');
+            }));
+            console.log(2);
+
+        }
+        jobs()
+    </script>
+    <script>
+        // 4虽然是同步代码，但是script代码块本身为宏任务，所以会等上一个script标签中的同步任务和微任务执行完毕后才执行
+        console.log(4);
     </script>
 </body>
 
