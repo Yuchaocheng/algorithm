@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker</title>
+</head>
+
+<body>
+    <script>
+        var worker = new Worker("work.js");
+        worker.postMessage('Hello World');
+        worker.postMessage({ method: 'echo', args: ['Work'] });
+        worker.onmessage = function (event) {
+            console.log(event, "event");
+        }
+        // 主线程 关闭子线程
+        // worker.terminate();
+    </script>
+</body>
+
+</html>
