@@ -2,49 +2,39 @@
  * @Description: 
  * @Autor: ycc
  * @Date: 2022-03-31 09:56:42
- * @LastEditTime: 2022-03-31 16:52:19
+ * @LastEditTime: 2022-04-06 12:25:37
 -->
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <script>
-        var threeSum = function (nums) {
-            const length = nums.length;
-            const result = []
-            for (let i = 0; i < length; i++) {
-                const target = 0 - nums[i]
-                const set = new Set()
-                for (let j = i + 1; j < length; j++) {
-                    if (set.has(target - nums[j])) {
-                        result.push([nums[i], target - nums[j], nums[j]])
-                    }
-                    set.add(nums[j])
-                }
-            }
-            // 现在的result是有重复问题的
-            // 事后去重，对于三个相加为0的数为言，绝对值相加相等，说明他们三个数相同
-            const realResult = []
-            const set2 = new Set()
-            result.forEach(arr => {
-                const v = arr.map(item => Math.pow(item, 2)).reduce((pre, cur) => pre + cur, 0)
-                console.log(v, 'v');
-                if (!set2.has(v)) {
-                    set2.add(v)
-                    realResult.push(arr)
-                }
-            })
-            return realResult
-        };
-        console.log(threeSum([-1, 0, 1, 0])); 
-    </script>
-</body>
+      var reverseWords = function (s) {
+        s = s.trim(); // 去掉首位空格
+        let slow = 0;
+        s = s.split('');
+        const len = s.length;
+        // 删除多余空格
+        for (let i = 1; i < len; i++) {
+          if (s[i] === 0 && s[slow] === 0) {
+            continue;
+          }
+          slow++;
+          s[slow] = s[i];
+        }
+        s.length = slow + 1;
+        s = s.join('')
+        console.log(s, 's');
+      };
 
+      const r = reverseWords('a good   example');
+      console.log(r, 'r');
+    </script>
+  </body>
 </html>

@@ -2,7 +2,7 @@
  * @Description: hash表练习文件
  * @Autor: ycc
  * @Date: 2022-03-31 09:53:43
- * @LastEditTime: 2022-03-31 16:19:03
+ * @LastEditTime: 2022-04-06 09:41:59
  */
 
 /**
@@ -110,6 +110,25 @@ var isHappy = function (n) {
   }
   return true;
 };
+
+// 法2，利用Set解题
+var isHappy2 = function (n) {
+  const set = new Set()
+  while (n !== 1) {
+    // 一旦出现循环说明是无限循环的，返回false
+    if (set.has(n)) {
+      return false
+    }
+    set.add(n)
+    let total = 0
+    n += ''
+    for (const key of n) {
+      total += key * key
+    }
+    n = total
+  }
+  return true
+};
 // console.log(isHappy(19));
 // 扩展，求一个数各个位置上的数字的平方和，除了使用字符串快速处理外，还可以
 
@@ -131,7 +150,29 @@ var getSum = function (n) {
 // 暴力解题就先略过了
 // 解题关键：求两个数的和等于trget，换个思路就是遍历到其中一个加数时，可以算出另外一个加数，数组中查找是否存在该加数
 var twoSum = function (nums, target) {
-  const map = new Map();
+  let result = [];
+  nums.some((num, i, self) => {
+    return self.some((item, index) => {
+      if (item + num === target && i !== index) {
+        result.push(i);
+        result.push(index);
+        return true;
+      }
+    });
+  });
+  return result;
+};
+
+var twoSum = function (nums, target) {
+  const map = new Map()
+  for (let i = 0; i < nums.length; i++) {
+    const other = target - nums[i]
+    if (map.has(other)) {
+      return [i, map.get(other)]
+    }
+    map.set(nums[i], i)
+  }
+  return [-1, -1]
 };
 
 /**
@@ -265,9 +306,117 @@ var canConstruct2 = function (ransomNote, magazine) {
  * @param {*} nums
  * @return {*}
  */
+
+// 三数之和用hash解题太麻烦了，使用双指针法解题
 var threeSum = function (nums) {
   const length = nums.length;
-  for (let i = 0; i < length; i++) {
-      
+  if (length < 3) return [];
+  nums = nums.sort((a, b) => a - b)
+  let map = new Map()
+  // 循环只需要到最后第二项即可
+  for (let i = 0; i < length - 2; i++) {
+    let left = i + 1
+    let right = length - 1
+    const sum = 0 - nums[i]
+    while (left < right) {
+      if (nums[left] + nums[right] > sum) {
+        right -= 1
+      } else if (nums[left] + nums[right] < sum) {
+        left += 1
+      } else {
+        // 因为每次都是从小到大push进去的，所以顺序肯定是一致的，考虑重复问题
+        const key = nums[i] + ',' + nums[left] + ',' + nums[right]
+        if (!map.has(key)) {
+          map.set(key, [nums[i], nums[left], nums[right]])
+        }
+        left += 1
+        right -= 1
+      }
+    }
   }
+  return Array.from(map.values())
+};
+
+/**
+ * @description: 四数之和： 给你一个由 n 个整数组成的数组 nums ，和一个目标值 target 。请你找出并返回满足下述全部条件且不重复的四元组 [nums[a], nums[b], nums[c], nums[d]] （若两个四元组元素一一对应，则认为两个四元组重复）
+ * @param {*} nums
+ * @param {*} target
+ * @return {*}
+ */
+// 法1：双指针法解题
+var fourSum = function (nums, target) {
+  const len = nums.length;
+  if (len < 4) {
+    return []
+  }
+  const map = new Map()
+  nums = nums.sort((a, b) => a - b)
+  for (let i = 0; i < len - 3; i++) {
+    for (let j = i + 1; j < len - 2; j++) {
+      let left = j + 1
+      let right = len - 1
+      const sum1 = nums[i] + nums[j]
+      while (left < right) {
+        const sum = sum1 + nums[left] + nums[right]
+        if (sum > target) {
+          right--
+          continue
+        }
+        if (sum < target) {
+          left++
+          continue
+        }
+        const value = [nums[i], nums[j], nums[left], nums[right]]
+        const key = value.join(',')
+        if (!map.has(key)) {
+          map.set(key, value)
+        }
+        left++
+        right--
+      }
+    }
+  }
+  return Array.from(map.values())
+};
+
+// 法2：双指针法去重优化，利用已经排好序的特点
+var fourSum2 = function (nums, target) {
+  const len = nums.length;
+  if (len < 4) {
+    return []
+  }
+  const result = []
+  nums.sort((a, b) => a - b)
+  for (let i = 0; i < len - 3; i++) {
+    // 因为数组已经排序，如果第一位相等，只可能是和前一位相等，并且和前一位相等时，组成情况完全被前一位覆盖，所以不必再循环
+    if (i > 0 && nums[i] === nums[i - 1]) {
+      continue
+    }
+    for (let j = i + 1; j < len - 2; j++) {
+      if (j > i + 1 && nums[j] === nums[j - 1]) {
+        continue
+      }
+      let left = j + 1
+      let right = len - 1
+      const sum1 = nums[i] + nums[j]
+      while (left < right) {
+        const sum = sum1 + nums[left] + nums[right]
+        if (sum > target) {
+          right--
+          continue
+        }
+        if (sum < target) {
+          left++
+          continue
+        }
+        const value = [nums[i], nums[j], nums[left], nums[right]]
+        result.push(value)
+        while (nums[left] === nums[++left] && left < right) {
+        }
+        while (nums[right] === nums[--right] && left < right) {
+        }
+      }
+    }
+  }
+  return result
 };
