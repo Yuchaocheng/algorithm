@@ -1,0 +1,59 @@
+<!--
+ * @Description: 
+ * @Autor: ycc
+ * @Date: 2022-04-09 09:56:49
+ * @LastEditTime: 2022-04-11 17:05:46
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        var threeSum = function (nums) {
+            const len = nums.length
+            if (len < 3) {
+                return []
+            }
+            nums = nums.sort((a, b) => a - b) //先进行排序
+            const map = new Map()
+            for (let i = 0; i < len - 2; i++) {
+                const set = new Set()
+                const target = 0 - nums[i]
+                let l = i + 1
+                let r = len - 1
+                console.log(target,'target');
+                while (l < r) {
+                    const sum = nums[l] + nums[r]
+                    if (sum > target) {
+                        r--
+                        continue
+                    }
+                    if (sum < target) {
+                        l++
+                        continue
+                    }
+                    console.log(111);
+                    const value = [nums[i], nums[l], nums[r]]
+                    // 去重，因为value已经按顺序排列了，所以只要转成字符串就能判断是否重复
+                    const key = value.join(',')
+                    map.set(key, value)
+                    // 注意点：匹配上后不要忘记移动指针，任何情况都要移动指针，不然造成死循环
+                    l++
+                    r--
+                }
+            }
+            return Array.from(map.values())
+        };
+        const r = threeSum([-1, 0, 1, 2, -1, -4])
+        console.log(r);
+    </script>
+</body>
+
+</html>

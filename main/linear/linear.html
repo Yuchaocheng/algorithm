@@ -1,37 +1,77 @@
 <!--
  * @Date: 2022-03-05 21:13:06
- * @LastEditTime: 2022-03-05 21:16:05
+ * @LastEditTime: 2022-04-13 14:29:44
  * @Author: ycc
  * @Description: file content
+ //   出现重复项、对称等词时可以考虑栈结构
 -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body>
-    <script>
-      function ListNode(val, next) {
-        this.val = val === undefined ? 0 : val;
-        this.next = next === undefined ? null : next;
-      }
-      var removeElements = function (head, val) {
-        let newList = new ListNode(0, head);
-        let cur = newList;
-        while (cur.next) {
-          if (cur.next.val == val) {
-            cur.next = cur.next.next;
-          } else {
-            cur = cur.next;
-          }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    var topKFrequent = function (nums, k) {
+      class Node {
+        data;
+        pri;
+        constructor(data, pri = 0) {
+          this.data = data
+          this.pri = pri
         }
-        console.log(newList.next, 22222);
-        return newList.next;
-      };
-      console.log(removeElements([7,7,7,7], 7));
-    </script>
-  </body>
+      }
+      class PriQue {
+        queue = []
+        enqueue(value, pri) {
+          const node = new Node(value, pri)
+          const len = this.queue.length
+          for (let i = 0; i < len; i++) {
+            const ele = this.queue[i]
+            if (node.pri >= ele.pri) {
+              this.queue.splice(i, 0, node)
+              return
+            }
+          }
+          // 传入的值优先级最小
+          this.queue.push(node)
+        }
+        dequeue() {
+          if (!this.queue.length) {
+            return null
+          }
+          return this.queue.shift().data
+        }
+        front() {
+          if (!this.queue.length) {
+            return null
+          }
+          return this.queue[0].data
+        }
+      }
+      const map = new Map()
+      for (const n of nums) {
+        map.set(n, (map.get(n) || 0) + 1)
+      }
+      const priQue = new PriQue()
+      for (const [key, value] of map) {
+        priQue.enqueue(key, value)
+      }
+      const result = []
+      while (k > 0) {
+        result.push(priQue.dequeue)
+        k--
+      }
+      return result
+    };
+    const r = topKFrequent("abbaca")
+    console.log(r)
+  </script>
+</body>
+
 </html>
