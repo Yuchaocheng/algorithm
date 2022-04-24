@@ -1,3 +1,9 @@
+<!--
+ * @Description: 
+ * @Autor: ycc
+ * @Date: 2022-03-26 09:11:50
+ * @LastEditTime: 2022-04-14 09:47:23
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,15 +16,6 @@
 
 <body>
     <script>
-        function student(school, sex, name) {
-            console.log(`${name} ，${sex}， 来自 ${school}`);
-        }
-
-        student('北京大学', '男', '张三')
-        student('北京大学', '男', '李四')
-        student('北京大学', '男', '王五')
-
-        // 函数柯里化 
         function curry(fn, ...params) {
             if (typeof fn !== 'function') {
                 return fn
@@ -28,15 +25,47 @@
                 return fn.apply(this, [...params, ...arguments])
             }
         }
-        const newStundent = curry(student, '北京大学', '男')
-        newStundent('张三')
-        newStundent('李四')
-        newStundent('王五')
+        function test1() {
+            function student(school, sex, name) {
+                console.log(`${name} ，${sex}， 来自 ${school}`);
+            }
 
-        const newStundent2 = curry(student, '北京大学')
-        newStundent2('男', '张三')
-        newStundent2('男', '李四')
-        newStundent2('男', '王五')
+            student('北京大学', '男', '张三')
+            student('北京大学', '男', '李四')
+            student('北京大学', '男', '王五')
+
+            // 函数柯里化 
+
+            const newStundent = curry(student, '北京大学', '男')
+            newStundent('张三')
+            newStundent('李四')
+            newStundent('王五')
+
+            const newStundent2 = curry(student, '北京大学')
+            newStundent2('男', '张三')
+            newStundent2('男', '李四')
+            newStundent2('男', '王五')
+        }
+
+        // 二刷，函数从入参和返回值入手
+        function curry2(fn, ...params) {
+            return function (...rest) {
+                params = params.concat(rest)
+                // 在实际应用过程中，一次柯里化的情况是更加常见的，这样的处理会导致末尾可以省略的参数必须填写上
+                if (params.length < fn.length) {
+                    return curry2.call(this, fn, ...params)
+                }
+                return fn.apply(this, params)
+            }
+        }
+        const f = function (a, b, c) {
+            return a + b + c
+        }
+        function test2() {
+            const _f = curry2(f)
+            console.log(_f(1)(2)(3));
+        }
+        test2()
     </script>
 </body>
 

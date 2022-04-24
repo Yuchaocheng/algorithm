@@ -51,8 +51,10 @@ class MyPromise {
         throw new Error('cannot return to itself');
       }
       if (result instanceof MyPromise) {
+        // .then的回调如果返回的又是一个Promise对象，则会在该Promise对象resolve时resolve，reject时reject
         result.then(resolve, reject);
       } else {
+        // 如果返回的不是Promise对象，则将其resolve
         resolve(result);
       }
     };
@@ -87,6 +89,7 @@ class MyPromise {
         this.rejectedQueue.push(rejectedMicrotask);
       }
     });
+    return resultPromise;
   }
   catch(callback) {
     return this.then(null, callback);

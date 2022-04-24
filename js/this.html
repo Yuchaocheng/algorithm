@@ -1,3 +1,9 @@
+<!--
+ * @Description: 
+ * @Autor: ycc
+ * @Date: 2022-03-26 09:11:50
+ * @LastEditTime: 2022-04-14 09:09:39
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,7 +39,7 @@
             Function.prototype.bind = function (obj, ...args) {
                 const symbol = Symbol()
                 obj[symbol] = this
-                return function (_args) {
+                return function (..._args) {
                     _args = args.concat(_args)
                     const result = obj[symbol](..._args)
                     delete obj[symbol]
@@ -53,8 +59,34 @@
             console.log(say.bind(obj)(obj.age));
         }
         // rewirteCall()
-        
 
+
+        // 二刷
+        const bind = function (context, fn, ...rest) {
+            if (!context) {
+                context = this || {}
+            }
+            const s = Symbol()
+            context[s] = fn
+            return function (...param) {
+                param = rest.concat(param)
+                const result = context[s](...param)
+                delete context[s]
+                return result
+            }
+        }
+
+        // call
+        const call = function (context, fn, ...params) {
+            if (!context) {
+                context = this || {}
+            }
+            const s = Symbol()
+            context[s] = fn
+            const result = fn(...params)
+            delete context[s]
+            return result
+        }
     </script>
 </body>
 

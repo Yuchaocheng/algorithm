@@ -2,7 +2,7 @@
  * @Descripttion: 记录一下有些遗忘的API，笔试时忘记很尴尬
  * @Author: ycc
  * @Date: 2022-02-11 16:02:37
- * @LastEditTime: 2022-04-06 12:07:13
+ * @LastEditTime: 2022-04-19 20:49:45
 -->
 
 # Math 相关
@@ -11,9 +11,13 @@
 - Math.sqrt(x)：求解 x 的平方根
 
 - 获得一个数的平方：
+
   1. n \* n
   2. n \*\* 2
   3. Math.pow(n,2)
+
+- Math.max()
+  要确保 max 方法中一定由参数，特别是通过...arr 的方式传入，如果 max 不带参数则会返回-Infinity
 
 # 数组相关
 

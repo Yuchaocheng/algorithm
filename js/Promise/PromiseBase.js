@@ -78,7 +78,7 @@ function PLinkTest() {
     }, 2000);
   });
   console.log(promise, 111);
-  
+
   promise.catch((value) => {
     console.log(1);
     console.log('resolve', value);
@@ -87,21 +87,28 @@ function PLinkTest() {
     console.log(1);
     console.log('resolve', value);
   });
-//   promise.then((value) => {
-//     console.log(1);
-//     console.log('resolve', value);
-//     return 'success success';
-//   });
+  //   promise.then((value) => {
+  //     console.log(1);
+  //     console.log('resolve', value);
+  //     return 'success success';
+  //   });
 
-//   promise.then((value) => {
-//     console.log(2);
-//     console.log('resolve', value);
-//   });
+  //   promise.then((value) => {
+  //     console.log(2);
+  //     console.log('resolve', value);
+  //   });
 
-//   promise.then((value) => {
-//     console.log(3);
-//     console.log('resolve', value);
-//   });
+  //   promise.then((value) => {
+  //     console.log(3);
+  //     console.log('resolve', value);
+  //   });
+  const p = new Promise((reslve, reject) => {
+    setTimeout(() => {
+      resolve(3);
+    }, 1000);
+  });
+
+  p.then();
 }
 
 // PLinkTest();

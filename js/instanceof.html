@@ -1,3 +1,9 @@
+<!--
+ * @Description: 
+ * @Autor: ycc
+ * @Date: 2022-03-26 09:11:50
+ * @LastEditTime: 2022-04-14 08:03:32
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,28 +17,36 @@
 <body>
     <script>
         function myInstanceof(obj, Class) {
-            if (!Class.prototype) {
+            if (!Class.prototype || !obj) {
                 return false
             }
             let right = Class.prototype
-            while (obj !== right) {
+            let left = Object.getPrototypeOf(obj)
+            while (left !== right) {
                 // 找到原型链顶部还没有找到
-                if (!obj) {
+                if (!left) {
                     return false
                 }
-                obj = Object.getPrototypeOf(obj)
+                left = Object.getPrototypeOf(left)
             }
             return true
         }
+        console.log(myInstanceof(Object.prototype, Object));
+        console.log(Object.prototype instanceof Object);
 
-        let arr = []
-        console.log(Object.getPrototypeOf(arr) instanceof Object);
-        console.log(arr instanceof Object);
-        console.log(null instanceof Object);
+        const Far = function () {
+            this.name = 'far'
+        }
+        const Son = function () {
+            this.name = 'son'
+        }
+        Son.prototype = new Far()
+        Son.prototype.constructor = Son
 
-        console.log(myInstanceof(Object.getPrototypeOf(arr), Object));
-        console.log(myInstanceof(arr, Object));
-        console.log(myInstanceof(null, Object));
+        const far = new Far()
+        const son = new Son()
+        let x = function () { }
+        // console.log(far instanceof x);
     </script>
 </body>
 

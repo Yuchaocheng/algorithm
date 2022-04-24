@@ -1,3 +1,9 @@
+<!--
+ * @Description: 
+ * @Autor: ycc
+ * @Date: 2022-03-26 09:11:50
+ * @LastEditTime: 2022-04-15 10:33:33
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,11 +12,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promise全理解</title>
-    <script src="./PromiseBase.js"></script>
+    <!-- <script src="./PromiseBase.js"></script> -->
     <!-- <script src="./MyPromise.js"></script> -->
 
     <!-- 复习手写Promise -->
-    <script src="./Promise2.js"></script>
+    <!-- <script src="./Promise2.js"></script> -->
+
+    <script src="./reference.js"></script>
 </head>
 
 <body>
@@ -37,6 +45,58 @@
             })
         }
         // qus()
+
+        function test() {
+            const promise = new MyPromise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve('success')
+                }, 2000);
+            })
+            promise.then(value => {
+                console.log(1)
+                console.log('resolve', value)
+            })
+
+            promise.then(value => {
+                console.log(2)
+                console.log('resolve', value)
+            })
+
+            promise.then(value => {
+                console.log(3)
+                console.log('resolve', value)
+            })
+
+            // 实现Promise all
+            const all = (promiseList) => {
+                if (!Array.isArray(promiseList)) {
+                    throw new Error('nedd a Array')
+                }
+                const len = promiseList.length
+                const result = []
+                let finishNum = 0
+                return new Promise((resolve, reject) => {
+                    if (!len) {
+                        resolve([])
+                    }
+
+                    for (let i = 0; i < len; i++) {
+                        Promise.resolve(promiseList[i]).then(
+                            data => {
+                                result[i] = data //保证结果顺序和PromiseList顺序一致
+                                if (++finishNum === len) {
+                                    resolve(result)
+                                }
+                            },
+                            reason => {
+                                reject(reason)
+                            }
+                        )
+                    }
+                })
+            }
+        }
+        test()
     </script>
 </body>
 
