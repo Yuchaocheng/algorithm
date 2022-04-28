@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>去重</title>
+  </head>
+  <body>
+    <script>
+      const arr = [1, 1, 1, 2, 3, 2];
+      // 1. Set快速去重，限制：返回了新数组而不是在原数组上进行操作
+      function S(arr) {
+        return [...new Set(arr)];
+      }
+
+      // 2. 快慢指针+哈希表去重，原数组上操作
+      function unique(arr) {
+        let slow = 0;
+        let set = new Set();
+        const len = arr.length;
+        for (let i = 0; i < len; i++) {
+          if (!set.has(arr[i])) {
+            set.add(arr[i]);
+            arr[slow++] = arr[i];
+          }
+        }
+        arr.length = slow;
+        return arr;
+      }
+      console.log(unique(arr));
+      console.log(arr);
+    </script>
+  </body>
+</html>

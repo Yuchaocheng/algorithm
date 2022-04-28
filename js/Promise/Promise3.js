@@ -2,7 +2,7 @@
  * @Description: 手写Promise二刷
  * @Autor: ycc
  * @Date: 2022-04-15 09:01:46
- * @LastEditTime: 2022-04-15 10:33:49
+ * @LastEditTime: 2022-04-26 10:47:01
  */
 
 const PENDING = 'pending';
@@ -165,8 +165,8 @@ class MyPromise {
 }
 
 const all = (promiseList) => {
-  if (!Array.isArray(promiseList)) {
-    throw new Error('nedd a Array');
+  if (!Array.isArray(promiseList) || !promiseList.length) {
+    return Promise.resolve(promiseList)
   }
   const len = promiseList.length;
   const result = [];

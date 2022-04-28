@@ -2,7 +2,7 @@
  * @Descripttion: 算法代码汇总
  * @Author: ycc
  * @Date: 2022-02-23 08:51:13
- * @LastEditTime: 2022-03-03 10:21:04
+ * @LastEditTime: 2022-04-26 07:21:45
  */
 
 // 不使用霍纳法则计算
@@ -33,7 +33,7 @@ exports.HN = (str, BASE_NUM) => {
 // 质数判断
 exports.isPrime = (num) => {
   if (typeof num !== 'number') {
-    throw new Error('param need a number');
+    return false;
   }
   // 质数为大于1的自然数
   if (num <= 1) {
@@ -49,4 +49,20 @@ exports.isPrime = (num) => {
 };
 
 // 请求最大公约数
-exports.gcd = () => {};
+exports.gcd = () => { };
+
+const isPrime = (num) => {
+  if (typeof num !== 'number') {
+    return false
+  }
+  if (num <= 1) {
+    return false
+  }
+  const temp = parseInt(Math.sqrt(num))
+  for (let i = 2; i <= temp; i++) {
+    if (num % i === 0) {
+      return false
+    }
+  }
+  return true
+}

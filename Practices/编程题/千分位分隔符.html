@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const x = 123455678;
+      const y = 12345567898;
+
+      function f(n) {
+        n = n + '';
+        return n.replace(/(\d)(?=(\d{3})+$)/g, function ($1) {
+          return $1 + ',';
+        });
+      }
+      console.log(f(x));
+      console.log(f(y));
+
+      function arr(n) {
+        n = n + '';
+        let s = '';
+        let count = 0;
+        const len = n.length;
+        for (let i = len - 1; i >= 0; i--) {
+          count++;
+          s = n[i] + s;
+          if (count % 3 === 0 && i) {
+            s = ',' + s;
+          }
+        }
+        return s;
+      }
+
+      console.log(arr(x));
+      console.log(arr(y));
+    </script>
+  </body>
+</html>
