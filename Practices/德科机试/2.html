@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>德科试题2，回溯法</title>
+  </head>
+  <body>
+    <script>
+      function main(arr1, arr2, k) {
+        let min = Infinity;
+        const path = [];
+        const e1 = arr1.length - 1;
+        const e2 = arr2.length - 1;
+        const backtrack = (s1, s2) => {
+          if (path.length === k) {
+            const current = path.flat().reduce((pre, cur) => pre + cur, 0);
+            console.log(current, 'current');
+            min = Math.min(min, current);
+            return;
+          }
+          if (s1 > e1 || s2 >e2) {
+            return;
+          }
+          for (let i = s1; i <= e1; i++) {
+            for (let j = s2; j <= e2; j++) {
+              path.push([arr1[i], arr2[j]]);
+              // 下一对i不动，j增加
+              backtrack(i, j + 1);
+              path.pop();
+            }
+            path.push([arr1[i], arr2[s2]]);
+            // 或者下一对j不动，i+1
+            backtrack(i + 1, s2);
+            path.pop();
+          }
+        };
+        backtrack(0, 0);
+        return min;
+      }
+      console.log(main([1, 1, 2], [1, 2, 3], 2));
+    </script>
+  </body>
+</html>

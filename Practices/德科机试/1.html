@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>德机试题1</title>
+  </head>
+  <body>
+    <script>
+      /**
+       * @description: 如果三个正整数A、B、C ,A²+B²=C²则为勾股数
+       *               如果ABC之间两两互质，即A与B，A与C，B与C均互质没有公约数，
+       *               则称其为勾股数元组
+       *               请求出给定n~m范围内所有的勾股数元组
+       * @param {*}
+       * @return {*}
+       */
+
+      function main(n, m) {
+        let res = [];
+        const path = [];
+        function solution(n, m) {
+          if (path.length >= 3) {
+            const [a, b, c] = path;
+            const isGou = a ** 2 + b ** 2 === c ** 2;
+            if (isGou) {
+              res.push([a, b, c]);
+            }
+            return;
+          }
+          for (let i = n; i <= m; i++) {
+            path.push(i);
+            solution(i + 1, m);
+            path.pop();
+          }
+        }
+        solution(n, m);
+        // 得到结果后再去关注是否两两互质
+        res = res.filter(([a, b, c]) => {
+          return relativePrime(a, b) && relativePrime(a, c) && relativePrime(b, c);
+        });
+        if (!res.length) {
+          return 'Na';
+        }
+        return res;
+      }
+
+      // 判断两个数是否互质，互质表示他们的公约数只有1，取较小的数，从2开始遍历，是否有某个数两者都能整除
+      function relativePrime(x, y) {
+        // 1与任何数都只有公约数1
+        if (x === 1 || y === 1) {
+          return true;
+        }
+
+        // 默认认为x比y小
+        if (x > y) {
+          [x, y] = [y, x];
+        }
+
+        // 两个数本身就是倍数关系
+        if (y % x === 0) {
+          return false;
+        }
+        const temp = Math.sqrt(x);
+        for (let i = 2; i <= temp; i++) {
+          if (x % i === 0 && y % i === 0) {
+            return false;
+          }
+        }
+        return true;
+      }
+      console.log(main(5, 10));
+    </script>
+  </body>
+</html>

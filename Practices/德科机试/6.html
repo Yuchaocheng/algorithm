@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 可以使用选择排序求解
+      function main(x, arr) {
+        const len = arr.length;
+        let minI = 0;
+        let min = 0;
+        for (let i = 0; i < len; i++) {
+          min = Math.abs(x - arr[i]);
+          minI = i;
+          for (let j = i + 1; j < len - 1; j++) {
+            const diff = Math.abs(x - arr[j]);
+            if (diff < min) {
+              minI = j;
+              min = diff;
+            } else if (diff === min) {
+              if (arr[j] < arr[minI]) {
+                minI = j;
+              }
+            }
+          }
+          // 将差值最小的值往前排
+          if (minI !== i) {
+            [arr[i], arr[minI]] = [arr[minI], arr[i]];
+          }
+        }
+        return arr;
+      }
+      console.log(main(100, [95, 96, 97, 98, 99, 101, 102, 103, 104, 105]));
+    </script>
+  </body>
+</html>
